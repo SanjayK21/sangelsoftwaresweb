@@ -5,9 +5,19 @@ import { MapPin, Mail, Phone, Globe, Shield, ArrowUpRight } from 'lucide-react';
 interface FooterProps {
   setActiveTab: (tab: string) => void;
   openConsultation: () => void;
+  onSelectCategory?: (categoryId: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActiveTab, openConsultation }) => {
+export const Footer: React.FC<FooterProps> = ({ setActiveTab, openConsultation, onSelectCategory }) => {
+  const handleCategoryNav = (categoryId: string) => {
+    if (onSelectCategory) {
+      onSelectCategory(categoryId);
+    } else {
+      setActiveTab('services');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-[#05080F] border-t border-slate-800 text-slate-400 text-sm">
       {/* Top Banner / Consultation Callout */}
@@ -50,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openConsultation }
               Sangel Softwares
             </span>
             <p className="text-xs text-slate-400 leading-relaxed pr-6">
-              Sangel Softwares Pvt. Ltd. is an enterprise technology and digital transformation company. We architect, modernize, and operate mission-critical software through AI, cloud infrastructure, enterprise ERP, and BFSI specialized engineering.
+              Sangel Softwares Pvt. Ltd. is an enterprise IT services and software product company specializing in Project Management & Delivery Governance, Full-Stack Design & Development, Branding & Digital Marketing, and Domain, Hosting & Digital Infrastructure.
             </p>
             <div className="pt-2 flex flex-col gap-2 text-xs text-slate-300">
               <div className="flex items-center gap-2">
@@ -63,63 +73,63 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openConsultation }
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-3.5 h-3.5 text-cyan-400" />
-                <span>ISO 27001 & RBI Compliance Ready Architecture</span>
+                <span>ISO 27001 & Enterprise Security Ready Architecture</span>
               </div>
             </div>
           </div>
 
-          {/* Column 2: Core Practices */}
+          {/* Column 2: 4 Core Service Segments */}
           <div className="space-y-3">
             <div className="text-xs font-semibold text-white uppercase tracking-wider">
-              Core Practices
+              4 Core Service Segments
             </div>
             <ul className="space-y-2 text-xs">
               <li>
                 <button
-                  onClick={() => { setActiveTab('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  onClick={() => handleCategoryNav('cat-project-mgmt')}
                   className="hover:text-cyan-400 transition-colors text-left"
                 >
-                  Custom Software Development
+                  01. Project Management & Delivery
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => { setActiveTab('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  onClick={() => handleCategoryNav('cat-design-dev')}
                   className="hover:text-cyan-400 transition-colors text-left"
                 >
-                  AI & Generative AI Solutions
+                  02. Design & Development
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => { setActiveTab('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  onClick={() => handleCategoryNav('cat-branding-marketing')}
                   className="hover:text-cyan-400 transition-colors text-left"
                 >
-                  BFSI & FinTech Engineering
+                  03. Branding & Digital Marketing
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => { setActiveTab('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  onClick={() => handleCategoryNav('cat-domain-infra')}
                   className="hover:text-cyan-400 transition-colors text-left"
                 >
-                  Enterprise ERP Implementation
+                  04. Domain, Hosting & Infra..
+                </button>
+              </li>
+              <li className="pt-1.5 border-t border-slate-800/80">
+                <button
+                  onClick={() => handleCategoryNav('cat-branding-marketing')}
+                  className="hover:text-cyan-400 text-cyan-300/90 transition-colors text-left flex items-center gap-1.5"
+                >
+                  <span>→ Email Marketing Sequences</span>
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => { setActiveTab('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="hover:text-cyan-400 transition-colors text-left"
+                  onClick={() => handleCategoryNav('cat-branding-marketing')}
+                  className="hover:text-emerald-400 text-emerald-300/90 transition-colors text-left flex items-center gap-1.5"
                 >
-                  Cloud Modernization & FinOps
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => { setActiveTab('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="hover:text-cyan-400 transition-colors text-left"
-                >
-                  IT Resource Augmentation
+                  <span>→ WhatsApp Promotional Marketing</span>
                 </button>
               </li>
             </ul>

@@ -41,6 +41,11 @@ export const ProjectCalculatorModal: React.FC<ProjectCalculatorModalProps> = ({
       sprintEstimate: '6 - 14 Sprints (12 - 28 Weeks)',
       podRec: 'ERP Squad: 1 ERP Domain Consultant, 3 Python/PostgreSQL Developers, 1 QA Engineer'
     },
+    'project-management': {
+      title: 'Project Management & Agile PMO Governance',
+      sprintEstimate: 'Continuous Cadence / 12 - 24 Weeks Transformation',
+      podRec: 'Delivery Pod: 1 Principal Delivery Director, 2 Agile Project Managers / Scrum Masters, 1 PMO Analyst'
+    },
     'resource-augmentation': {
       title: 'Rapid Engineering Talent Augmentation',
       sprintEstimate: 'Immediate Deployment (< 5 Business Days)',
@@ -94,12 +99,13 @@ export const ProjectCalculatorModal: React.FC<ProjectCalculatorModalProps> = ({
             <label className="block text-xs font-semibold text-slate-200 mb-2">
               1. What is your primary strategic initiative?
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
               {[
                 { id: 'ai-genai', label: 'AI & Generative AI' },
                 { id: 'custom-software', label: 'Custom Enterprise App' },
                 { id: 'legacy-modernization', label: 'Legacy Modernization' },
                 { id: 'erp-implementation', label: 'ERP & Operations' },
+                { id: 'project-management', label: 'Project Management & PMO' },
                 { id: 'resource-augmentation', label: 'IT Talent Augmentation' },
                 { id: 'managed-services', label: '24/7 Managed Services' }
               ].map((opt) => (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Calendar, CheckCircle2, Shield, Clock, Send } from 'lucide-react';
+import { X, Calendar, CheckCircle2, Shield, Clock, Send, Mail, Copy, Check, ExternalLink } from 'lucide-react';
 import { SERVICES_DATA } from '../data/companyData';
+import { dispatchEmailEnquiry, generateMailtoUrl, COMPANY_OFFICIAL_EMAIL, formatEmailBody } from '../utils/emailEnquiry';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     workEmail: '',
     company: '',
     role: 'CTO / VP Engineering',
-    service: preselectedService || 'AI & Generative AI Solutions',
+    service: preselectedService || 'Enterprise Project Management & Agile PMO',
     timezone: 'Asia/Kolkata (IST)',
     preferredTime: 'Next Available (Within 24 Hours)',
     notes: initialNotes || ''
@@ -28,9 +29,22 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   if (!isOpen) return null;
+
+  const currentPayload = {
+    type: 'consultation' as const,
+    subject: `Consultation Booking: ${formData.service}`,
+    senderName: formData.fullName,
+    senderEmail: formData.workEmail,
+    companyName: formData.company,
+    role: formData.role,
+    serviceOrProduct: formData.service,
+    timeline: `${formData.preferredTime} (${formData.timezone})`,
+    notes: formData.notes
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,10 +61,20 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     setErrorMessage('');
     setIsSubmitting(true);
 
+    // Dispatch email enquiry
+    dispatchEmailEnquiry(currentPayload);
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 800);
+    }, 600);
+  };
+
+  const handleCopyDetails = () => {
+    const text = formatEmailBody(currentPayload);
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
   };
 
   const handleReset = () => {
@@ -72,15 +96,15 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         </button>
 
         {isSubmitted ? (
-          <div className="py-8 text-center space-y-4">
+          <div className="py-6 text-center space-y-4">
             <div className="w-14 h-14 bg-cyan-950/80 border border-cyan-500/50 rounded-full flex items-center justify-center mx-auto text-cyan-400">
               <CheckCircle2 className="w-8 h-8" />
             </div>
             <h3 className="font-display text-2xl font-bold text-white tracking-tight">
-              Consultation Scheduled
+              Consultation Enquiry Sent to Email
             </h3>
             <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-              Thank you, <span className="text-cyan-400 font-semibold">{formData.fullName}</span>. A senior technology partner from Sangel Softwares will review your requirements and send a calendar invitation to <span className="text-white font-medium">{formData.workEmail}</span>.
+              Thank you, <span className="text-cyan-400 font-semibold">{formData.fullName}</span>. Your consultation request has been routed to our executive engineering inbox at <span className="text-white font-mono font-semibold underline">{COMPANY_OFFICIAL_EMAIL}</span>.
             </p>
 
             <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 max-w-md mx-auto text-left text-xs space-y-2">
@@ -96,13 +120,31 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={generateMailtoUrl(currentPayload)}
+                className="px-4 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-semibold text-xs rounded-lg transition-colors flex items-center gap-2 cursor-pointer shadow-sm shadow-cyan-500/20"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>Open in Mail Client</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+
+              <button
+                type="button"
+                onClick={handleCopyDetails}
+                className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold text-xs rounded-lg border border-slate-700 transition-colors flex items-center gap-2 cursor-pointer"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-cyan-400" />}
+                <span>{copied ? 'Copied Details!' : 'Copy Email Summary'}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-6 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2.5 bg-transparent hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-xs rounded-lg transition-colors cursor-pointer"
               >
-                Close & Return to Site
+                Close
               </button>
             </div>
           </div>

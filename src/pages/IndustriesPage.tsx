@@ -1,28 +1,43 @@
 import React, { useState } from 'react';
-import { INDUSTRIES_DATA } from '../data/companyData';
+import { TARGET_INDUSTRIES } from '../data/companyData';
 import { ASSETS } from '../data/assets';
 import { IndustryItem } from '../types';
-import { ShieldCheck, CheckCircle2, ArrowRight, Building, Award, Cpu } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, ArrowRight, Building, Award, Cpu, Sun, GraduationCap, Globe, Factory, Landmark, Rocket } from 'lucide-react';
 
 interface IndustriesPageProps {
   openConsultation: (industryName?: string) => void;
+  onRequestDemo?: () => void;
 }
 
-export const IndustriesPage: React.FC<IndustriesPageProps> = ({ openConsultation }) => {
-  const [selectedIndustryId, setSelectedIndustryId] = useState('bfsi');
+export const IndustriesPage: React.FC<IndustriesPageProps> = ({ openConsultation, onRequestDemo }) => {
+  const [selectedIndustryId, setSelectedIndustryId] = useState('solar-energy');
 
-  const selectedIndustry = INDUSTRIES_DATA.find(i => i.id === selectedIndustryId) || INDUSTRIES_DATA[0];
+  const selectedIndustry = TARGET_INDUSTRIES.find(i => i.id === selectedIndustryId) || TARGET_INDUSTRIES[0];
 
   const industryImages: Record<string, string> = {
-    bfsi: ASSETS.bfsiFintech,
-    manufacturing: ASSETS.manufacturingSmart,
-    healthcare: ASSETS.healthcareDigital,
-    retail: ASSETS.heroTransformation,
-    logistics: ASSETS.cloudArchitecture,
-    education: ASSETS.corporateBoardroom
+    'solar-energy': ASSETS.manufacturingSmart,
+    'education-institutes': ASSETS.aiEngineering,
+    'bfsi': ASSETS.bfsiFintech,
+    'manufacturing': ASSETS.manufacturingSmart,
+    'startups-smes': ASSETS.heroTransformation,
+    'healthcare': ASSETS.healthcareDigital,
+    'retail-ecommerce': ASSETS.cloudArchitecture,
+    'international-clients': ASSETS.corporateBoardroom
   };
 
   const currentPhoto = industryImages[selectedIndustry.id] || ASSETS.bfsiFintech;
+
+  const getIndustryIcon = (id: string) => {
+    switch (id) {
+      case 'solar-energy': return <Sun className="w-4 h-4 text-amber-400" />;
+      case 'education-institutes': return <GraduationCap className="w-4 h-4 text-cyan-400" />;
+      case 'bfsi': return <Landmark className="w-4 h-4 text-emerald-400" />;
+      case 'manufacturing': return <Factory className="w-4 h-4 text-blue-400" />;
+      case 'startups-smes': return <Rocket className="w-4 h-4 text-purple-400" />;
+      case 'international-clients': return <Globe className="w-4 h-4 text-cyan-400" />;
+      default: return <Building className="w-4 h-4 text-cyan-400" />;
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 space-y-16">
@@ -32,32 +47,33 @@ export const IndustriesPage: React.FC<IndustriesPageProps> = ({ openConsultation
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-400">
           <span>Target Industry Practices</span>
           <span aria-hidden="true" className="text-slate-600">·</span>
-          <span>Domain Depth</span>
+          <span>Domain Fluency</span>
         </div>
 
-        <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-          Specialized Engineering for Regulated & High-Throughput Sectors
+        <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-snug">
+          Specialized Engineering for Solar, Education, Enterprise Tech, Manufacturing & Global Clients
         </h1>
 
         <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-          Generic software often fails in mission-critical environments. Sangel Softwares combines deep domain fluency with modern cloud and AI architectures to guarantee compliance, zero data loss, and sub-second performance.
+          Generic software often fails in mission-critical environments. Sangel Softwares combines deep domain fluency with modern cloud and AI architectures to guarantee regulatory compliance, field reliability, and sub-second performance.
         </p>
       </section>
 
       {/* 2. Interactive Industry Switcher */}
       <section className="space-y-8">
         <div className="flex items-center gap-2 overflow-x-auto pb-3 border-b border-slate-800 scrollbar-none">
-          {INDUSTRIES_DATA.map((industry) => (
+          {TARGET_INDUSTRIES.map((industry) => (
             <button
               key={industry.id}
               onClick={() => setSelectedIndustryId(industry.id)}
-              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-2 ${
                 selectedIndustryId === industry.id
                   ? 'bg-cyan-950 text-cyan-300 border border-cyan-700/80 shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent'
               }`}
             >
-              {industry.name}
+              {getIndustryIcon(industry.id)}
+              <span>{industry.name}</span>
             </button>
           ))}
         </div>
@@ -73,11 +89,11 @@ export const IndustriesPage: React.FC<IndustriesPageProps> = ({ openConsultation
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent flex flex-col justify-end p-6">
               <div className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                {selectedIndustry.name} Infrastructure & Engineering
+                {selectedIndustry.name} Infrastructure & Domain Systems
               </div>
-              <div className="font-display text-lg sm:text-xl font-bold text-white mt-0.5">
+              <div className="font-display text-lg sm:text-2xl font-bold text-white mt-0.5">
                 {selectedIndustry.headline}
               </div>
             </div>
@@ -126,7 +142,7 @@ export const IndustriesPage: React.FC<IndustriesPageProps> = ({ openConsultation
               <div>
                 <h3 className="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2 mb-3">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Mandatory Regulatory & Security Standards</span>
+                  <span>Mandatory Standards & Regulatory Governance</span>
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedIndustry.regulatoryCompliance.map((reg, idx) => (
@@ -168,27 +184,33 @@ export const IndustriesPage: React.FC<IndustriesPageProps> = ({ openConsultation
           All Target Sectors & Strategic Verticals
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {INDUSTRIES_DATA.map((ind) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {TARGET_INDUSTRIES.map((ind) => (
             <div
               key={ind.id}
               onClick={() => setSelectedIndustryId(ind.id)}
-              className={`p-6 rounded-xl border transition-all cursor-pointer ${
+              className={`p-5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                 selectedIndustryId === ind.id
                   ? 'bg-slate-900 border-cyan-500 shadow-md'
                   : 'bg-slate-900/40 border-slate-800 hover:border-slate-700'
               }`}
             >
-              <div className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Industry Practice
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
+                    Sector
+                  </div>
+                  {getIndustryIcon(ind.id)}
+                </div>
+                <h4 className="font-display text-lg font-bold text-white mt-1">
+                  {ind.name}
+                </h4>
+                <p className="text-xs text-slate-300 mt-2 line-clamp-2">
+                  {ind.headline}
+                </p>
               </div>
-              <h4 className="font-display text-xl font-bold text-white mt-1">
-                {ind.name}
-              </h4>
-              <p className="text-xs text-slate-300 mt-2 line-clamp-2">
-                {ind.headline}
-              </p>
-              <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
+
+              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
                 <span>View practice blueprint</span>
                 <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
               </div>

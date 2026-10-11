@@ -11,6 +11,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { IndustriesPage } from './pages/IndustriesPage';
 import { ProductsPage } from './pages/ProductsPage';
+import { PortfolioPage } from './pages/PortfolioPage';
 import { CareersPage } from './pages/CareersPage';
 import { InsightsPage } from './pages/InsightsPage';
 import { ContactPage } from './pages/ContactPage';
@@ -18,14 +19,17 @@ import { ContactPage } from './pages/ContactPage';
 import { ServiceModal } from './components/ServiceModal';
 import { ProjectCalculatorModal } from './components/ProjectCalculatorModal';
 import { ConsultationModal } from './components/ConsultationModal';
+import { ProductDemoModal } from './components/ProductDemoModal';
 import { ArticleModal } from './components/ArticleModal';
 import { JobApplicationModal } from './components/JobApplicationModal';
 
-import { ServiceItem, InsightArticle, JobOpening } from './types';
+import { ServiceItem, InsightArticle, JobOpening, ProductItem } from './types';
 import { Calendar, Calculator } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedProductId, setSelectedProductId] = useState<string>('all');
 
   // Modals state
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
@@ -33,6 +37,8 @@ export default function App() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [consultationServiceContext, setConsultationServiceContext] = useState('');
   const [consultationInitialNotes, setConsultationInitialNotes] = useState('');
+  const [selectedDemoProduct, setSelectedDemoProduct] = useState<ProductItem | null>(null);
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   
   const [selectedArticle, setSelectedArticle] = useState<InsightArticle | null>(null);
   const [selectedJob, setSelectedJob] = useState<JobOpening | null>(null);
@@ -42,10 +48,29 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
 
+  const handleSelectCategory = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setActiveTab('services');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProductId(productId);
+    setActiveTab('products');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleOpenConsultation = (serviceName?: string, notes?: string) => {
     setConsultationServiceContext(serviceName || '');
     setConsultationInitialNotes(notes || '');
     setIsConsultationOpen(true);
+  };
+
+  const handleOpenDemoModal = (product?: ProductItem) => {
+    if (product) {
+      setSelectedDemoProduct(product);
+    }
+    setIsDemoModalOpen(true);
   };
 
   const handleProceedFromCalculator = (briefSummary: string) => {
@@ -62,6 +87,8 @@ export default function App() {
         setActiveTab={setActiveTab}
         openConsultation={() => handleOpenConsultation()}
         openCalculator={() => setIsCalculatorOpen(true)}
+        onSelectCategory={handleSelectCategory}
+        onSelectProduct={handleSelectProduct}
       />
 
       {/* Main Page Content */}
@@ -72,6 +99,9 @@ export default function App() {
             openConsultation={(service) => handleOpenConsultation(service)}
             openCalculator={() => setIsCalculatorOpen(true)}
             setActiveTab={setActiveTab}
+            onRequestDemo={handleOpenDemoModal}
+            onSelectCategory={handleSelectCategory}
+            onSelectProduct={handleSelectProduct}
           />
         )}
 
@@ -87,6 +117,7 @@ export default function App() {
             onSelectService={(service) => setSelectedService(service)}
             openConsultation={(service) => handleOpenConsultation(service)}
             openCalculator={() => setIsCalculatorOpen(true)}
+            initialCategory={selectedCategory}
           />
         )}
 
@@ -98,7 +129,16 @@ export default function App() {
 
         {activeTab === 'products' && (
           <ProductsPage
+            onRequestDemo={handleOpenDemoModal}
             openConsultation={(product) => handleOpenConsultation(product)}
+            selectedProductId={selectedProductId}
+          />
+        )}
+
+        {activeTab === 'portfolio' && (
+          <PortfolioPage
+            openConsultation={(proj) => handleOpenConsultation(proj ? `Project Case Study: ${proj}` : undefined)}
+            onRequestDemo={() => handleOpenDemoModal()}
           />
         )}
 
@@ -125,6 +165,8 @@ export default function App() {
       <Footer
         setActiveTab={setActiveTab}
         openConsultation={() => handleOpenConsultation()}
+        onSelectCategory={handleSelectCategory}
+        onSelectProduct={handleSelectProduct}
       />
 
       {/* Modals */}
@@ -147,6 +189,12 @@ export default function App() {
         initialNotes={consultationInitialNotes}
       />
 
+      <ProductDemoModal
+        isOpen={isDemoModalOpen}
+        onClose={() => setIsDemoModalOpen(false)}
+        preselectedProduct={selectedDemoProduct}
+      />
+
       <ArticleModal
         article={selectedArticle}
         onClose={() => setSelectedArticle(null)}
@@ -161,18 +209,11 @@ export default function App() {
       {/* Floating Action Trigger (Compact and compliant with 15% mobile sticky cap) */}
       <aside aria-label="Quick Actions" className="fixed bottom-5 right-5 z-40 flex items-center gap-2">
         <button
-          onClick={() => setIsCalculatorOpen(true)}
-          className="hidden md:flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-700 rounded-full shadow-lg transition-colors cursor-pointer"
-        >
-          <Calculator className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Scope Estimator</span>
-        </button>
-        <button
           onClick={() => handleOpenConsultation()}
           className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-950 bg-cyan-400 hover:bg-cyan-300 rounded-full shadow-lg shadow-cyan-500/25 transition-transform hover:scale-105 cursor-pointer"
         >
           <Calendar className="w-3.5 h-3.5" />
-          <span>Schedule Briefing</span>
+          <span>Get a Free Consultation</span>
         </button>
       </aside>
 

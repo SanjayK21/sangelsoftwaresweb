@@ -41,12 +41,12 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ onReadArticle }) => 
           <span>Thought Leadership</span>
         </div>
 
-        <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-          Architectural Perspectives on AI, BFSI & Enterprise Modernization
+        <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-snug">
+          Architectural Perspectives on AI, Cloud & Enterprise Modernization
         </h1>
 
         <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-          Deep-dive analyses authored by Sangel Softwares' Principal Architects on core banking de-risking, agentic workflows, and cloud governance.
+          Deep-dive analyses authored by Sangel Softwares' Principal Architects on enterprise system engineering, agentic AI workflows, and digital infrastructure governance.
         </p>
 
         {/* Filter & Search */}

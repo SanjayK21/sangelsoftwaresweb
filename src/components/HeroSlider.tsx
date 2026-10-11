@@ -88,36 +88,36 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 sm:p-10 lg:p-12 max-w-4xl">
           
           {/* Category kicker */}
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-400 mb-2">
-            <span>{currentSlide.category}</span>
+          <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-cyan-400 mb-1.5">
+            <span className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800/60 backdrop-blur-sm">{currentSlide.category}</span>
             <span aria-hidden="true" className="text-slate-500">·</span>
-            <span className="text-slate-300 font-mono normal-case">
+            <span className="text-slate-300 font-mono text-[11px] normal-case">
               0{currentSlideIndex + 1} / 0{HERO_SLIDES.length}
             </span>
           </div>
 
-          {/* Slide Headline */}
-          <h2 className="font-display text-2xl sm:text-4xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight text-balance">
+          {/* Slide Headline - minimised, attractive, refined typography */}
+          <h2 className="font-display text-lg sm:text-2xl lg:text-2xl font-bold text-white tracking-normal leading-snug max-w-2xl text-balance drop-shadow-sm">
             {currentSlide.headline}
           </h2>
 
           {/* Slide Subtext */}
-          <p className="mt-2 text-xs sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+          <p className="mt-1.5 text-xs sm:text-sm text-slate-300/90 max-w-xl leading-relaxed">
             {currentSlide.subtext}
           </p>
 
           {/* Quantified Metric Badge & Action Controls */}
-          <div className="mt-5 flex flex-wrap items-center gap-4">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             {currentSlide.metricValue && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80 text-xs">
-                <span className="text-slate-400 font-medium">{currentSlide.metricLabel}:</span>
-                <span className="text-cyan-400 font-bold font-mono">{currentSlide.metricValue}</span>
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/80 text-xs backdrop-blur-sm">
+                <span className="text-slate-400 font-normal">{currentSlide.metricLabel}:</span>
+                <span className="text-cyan-300 font-semibold font-mono">{currentSlide.metricValue}</span>
               </div>
             )}
 
             <button
               onClick={() => handleActionClick(currentSlide)}
-              className="flex items-center gap-2 px-4 py-2 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-semibold text-xs rounded-lg transition-colors cursor-pointer shadow-sm shadow-cyan-500/20 whitespace-nowrap"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-semibold text-xs rounded-lg transition-colors cursor-pointer shadow-sm shadow-cyan-500/20 whitespace-nowrap"
             >
               <span>{currentSlide.actionText}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -157,28 +157,36 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       </div>
 
       {/* Progress & Slide Thumbnails Strip */}
-      <div className="bg-[#070B13] border-t border-slate-800/80 p-3 sm:p-4 grid grid-cols-5 gap-2">
-        {HERO_SLIDES.map((slide, idx) => {
-          const isSelected = idx === currentSlideIndex;
-          return (
-            <button
-              key={slide.id}
-              onClick={() => setCurrentSlideIndex(idx)}
-              className={`text-left p-2 rounded-lg transition-all border cursor-pointer ${
-                isSelected
-                  ? 'bg-cyan-950/80 border-cyan-500 shadow-sm'
-                  : 'bg-slate-900/40 border-slate-800/80 hover:border-slate-700 opacity-60 hover:opacity-100'
-              }`}
-            >
-              <div className="font-mono text-[10px] text-cyan-400 font-bold">
-                0{idx + 1}.
-              </div>
-              <div className="font-semibold text-white text-xs truncate mt-0.5">
-                {slide.category.split(' ')[0]}
-              </div>
-            </button>
-          );
-        })}
+      <div className="bg-[#070B13] border-t border-slate-800/80 p-2 sm:p-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1.5">
+          {HERO_SLIDES.map((slide, idx) => {
+            const isSelected = idx === currentSlideIndex;
+            return (
+              <button
+                key={slide.id}
+                onClick={() => setCurrentSlideIndex(idx)}
+                className={`text-left p-1.5 sm:p-2 rounded-lg transition-all border cursor-pointer relative group/thumb overflow-hidden ${
+                  isSelected
+                    ? 'bg-cyan-950/90 border-cyan-400 shadow-md ring-1 ring-cyan-400/30'
+                    : 'bg-slate-900/50 border-slate-800/80 hover:border-slate-700 opacity-65 hover:opacity-100 hover:bg-slate-850'
+                }`}
+                title={slide.headline}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={`font-mono text-[9px] font-medium ${isSelected ? 'text-cyan-300' : 'text-slate-400'}`}>
+                    0{idx + 1}
+                  </span>
+                  {isSelected && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                  )}
+                </div>
+                <div className={`text-[10px] sm:text-[11px] font-medium truncate mt-0.5 ${isSelected ? 'text-white font-semibold' : 'text-slate-300'}`}>
+                  {slide.category.split(' ')[0]}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
     </div>

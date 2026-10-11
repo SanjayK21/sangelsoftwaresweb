@@ -71,3 +71,38 @@ export interface EngagementOption {
   billingModel: string;
   slaCommitment: string;
 }
+
+export interface ProductItem {
+  id: string;
+  name: string;
+  tagline: string;
+  stage: 'Available' | 'Beta' | 'Pilot' | 'Coming Soon';
+  category: string;
+  description: string;
+  keyFeatures: string[];
+  targetAudience: string[];
+  modules: string[];
+  iconName?: string;
+}
+
+export interface ServiceCategory {
+  id: string;
+  code: string;
+  name: string;
+  shortDesc: string;
+  servicesCount: number;
+}
+
+export interface PortfolioProject {
+  id: string;
+  title: string;
+  category: string;
+  clientIndustry: string;
+  duration: string;
+  summary: string;
+  challenge: string;
+  solution: string;
+  deliverables: string[];
+  impactMetrics: { label: string; value: string }[];
+  technologies: string[];
+}

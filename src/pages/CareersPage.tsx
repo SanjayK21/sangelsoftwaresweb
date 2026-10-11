@@ -34,7 +34,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ onApplyJob }) => {
           <span>We're Hiring</span>
         </div>
 
-        <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+        <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-snug">
           Build Mission-Critical Software and Shape Enterprise AI
         </h1>
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { COMPANY_INFO, SERVICES_DATA } from '../data/companyData';
-import { Mail, Phone, MapPin, Globe, Shield, Send, CheckCircle2, Calendar, Clock } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, Shield, Send, CheckCircle2, Calendar, Clock, Copy, Check, ExternalLink } from 'lucide-react';
+import { dispatchEmailEnquiry, generateMailtoUrl, COMPANY_OFFICIAL_EMAIL, formatEmailBody } from '../utils/emailEnquiry';
 
 interface ContactPageProps {
   openConsultation: () => void;
@@ -12,14 +13,27 @@ export const ContactPage: React.FC<ContactPageProps> = ({ openConsultation }) =>
     email: '',
     company: '',
     role: 'CTO / Engineering Leader',
-    service: 'AI & Generative AI Solutions',
+    service: 'Enterprise Project Management & Agile PMO',
     timeline: 'Within 30 Days',
     message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  const currentPayload = {
+    type: 'general_inquiry' as const,
+    subject: `New Enterprise Inquiry: ${formData.service}`,
+    senderName: formData.name,
+    senderEmail: formData.email,
+    companyName: formData.company,
+    role: formData.role,
+    serviceOrProduct: formData.service,
+    timeline: formData.timeline,
+    notes: formData.message
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,10 +48,21 @@ export const ContactPage: React.FC<ContactPageProps> = ({ openConsultation }) =>
 
     setErrorMsg('');
     setIsSubmitting(true);
+
+    // Automatically trigger dispatch to official email
+    dispatchEmailEnquiry(currentPayload);
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 700);
+    }, 600);
+  };
+
+  const handleCopyDetails = () => {
+    const text = formatEmailBody(currentPayload);
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
   };
 
   return (
@@ -51,7 +76,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ openConsultation }) =>
           <span>Contact Sangel Softwares</span>
         </div>
 
-        <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+        <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-snug">
           Initiate Your Enterprise Transformation Dialogue
         </h1>
 
@@ -66,21 +91,60 @@ export const ContactPage: React.FC<ContactPageProps> = ({ openConsultation }) =>
         {/* Contact Form */}
         <div className="lg:col-span-7 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 sm:p-9 shadow-xl">
           {isSubmitted ? (
-            <div className="py-12 text-center space-y-4">
+            <div className="py-10 text-center space-y-4">
               <div className="w-14 h-14 bg-cyan-950/80 border border-cyan-500/50 rounded-full flex items-center justify-center mx-auto text-cyan-400">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
               <h3 className="font-display text-2xl font-bold text-white tracking-tight">
-                Inquiry Successfully Logged
+                Enquiry Dispatched to Email
               </h3>
-              <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                Thank you, <span className="text-cyan-400 font-semibold">{formData.name}</span>. A senior technology partner from Sangel Softwares has received your brief and will respond within 4 business hours with an NDA and initial architectural review.
+              <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                Thank you, <span className="text-cyan-400 font-semibold">{formData.name}</span>. Your enquiry has been prepared and routed to our executive engineering inbox at <span className="text-white font-mono font-semibold underline">{COMPANY_OFFICIAL_EMAIL}</span>.
               </p>
-              <div className="pt-4">
+
+              {/* Inquiry Email Summary Box */}
+              <div className="bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 max-w-lg mx-auto text-left text-xs space-y-2">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-slate-400">
+                  <span className="font-mono text-cyan-400 font-bold">ROUTED TO: {COMPANY_OFFICIAL_EMAIL}</span>
+                  <span className="text-emerald-400 font-medium flex items-center gap-1">
+                    <Shield className="w-3 h-3" /> SLA &lt; 4 Hours
+                  </span>
+                </div>
+                <div className="text-slate-300">
+                  <span className="text-slate-500 font-medium">Practice / Focus:</span> {formData.service}
+                </div>
+                <div className="text-slate-300">
+                  <span className="text-slate-500 font-medium">Organization:</span> {formData.company} ({formData.role})
+                </div>
+                <div className="text-slate-300">
+                  <span className="text-slate-500 font-medium">Timeline:</span> {formData.timeline}
+                </div>
+              </div>
+
+              {/* Email actions */}
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+                <a
+                  href={generateMailtoUrl(currentPayload)}
+                  className="px-4 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-semibold text-xs rounded-lg transition-colors flex items-center gap-2 cursor-pointer shadow-sm shadow-cyan-500/20"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Open in Mail Client</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleCopyDetails}
+                  className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold text-xs rounded-lg border border-slate-700 transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-cyan-400" />}
+                  <span>{copied ? 'Copied to Clipboard!' : 'Copy Email Details'}</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setIsSubmitted(false)}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2.5 bg-transparent hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-xs rounded-lg transition-colors cursor-pointer"
                 >
                   Submit Another Inquiry
                 </button>
